@@ -8,6 +8,7 @@ int main() {
     char correctUser[] = "admin";
     char correctPass[] = "admin123";
 
+    
     printf("Enter Username: ");
     scanf("%s", username);
 
