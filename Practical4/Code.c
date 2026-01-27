@@ -43,96 +43,96 @@ String Accepted!
 #include <stdio.h>
 #include <string.h>
 
-/* Stack to store grammar symbols */
 char stack[50];
 int top = -1;
 
-/* Push a symbol onto stack */
+/* push into stack */
 void push(char c) {
     stack[++top] = c;
 }
 
-/* Pop a symbol from stack */
-char pop() {
-    return stack[top--];
+/* pop from stack */
+void pop() {
+    top--;
 }
 
 int main() {
     char input[50];
-    int i = 0;      // Input pointer
-    char x;         // Top of stack symbol
+    int i = 0;
+    char x;
+    int k;
 
-    /* Display grammar */
     printf("Grammar:\n");
-    printf("E  -> T E'\n");
-    printf("E' -> + T E' | ε\n");
-    printf("T  -> i\n\n");
+    printf("E -> T R\n");
+    printf("R -> + T R | e\n");
+    printf("T -> i\n\n");
 
-    /* Read input string */
     printf("Enter input string (end with $): ");
     scanf("%s", input);
 
-    /* Initialize stack with end marker and start symbol */
+    /* initialize stack */
     push('$');
     push('E');
 
     printf("\nStack\tInput\tAction\n");
 
-    /* Parsing loop */
     while (top >= 0) {
-        x = stack[top];   // Get top of stack
+        x = stack[top];
 
-        printf("%s\t%s\t", stack, &input[i]);
+        /* print stack */
+        for (k = 0; k <= top; k++)
+            printf("%c", stack[k]);
 
-        /* If terminal matches input symbol */
+        printf("\t%s\t", &input[i]);
+
+        /* terminal match */
         if (x == input[i]) {
             pop();
             i++;
             printf("Match %c\n", x);
         }
 
-        /* Apply production E → T E' */
+        /* E -> T R */
         else if (x == 'E') {
             pop();
-            push('E');
+            push('R');
             push('T');
-            printf("E -> T E'\n");
+            printf("E -> T R\n");
         }
 
-        /* Apply production T → i */
+        /* T -> i */
         else if (x == 'T' && input[i] == 'i') {
             pop();
             push('i');
             printf("T -> i\n");
         }
 
-        /* Apply production E' → + T E' */
-        else if (x == 'E' && input[i] == '+') {
+        /* R -> + T R */
+        else if (x == 'R' && input[i] == '+') {
             pop();
-            push('E');
+            push('R');
             push('T');
             push('+');
-            printf("E' -> + T E'\n");
+            printf("R -> + T R\n");
         }
 
-        /* Apply epsilon production E' → ε */
-        else if (x == 'E' && input[i] == '$') {
+        /* R -> e */
+        else if (x == 'R' && input[i] == '$') {
             pop();
-            printf("E' -> ε\n");
+            printf("R -> e\n");
         }
 
-        /* Error condition */
         else {
             printf("Error\n");
             return 0;
         }
     }
 
-    /* Final acceptance check */
-    if (input[i] == '$')
-        printf("\nString Accepted!\n");
-    else
-        printf("\nString Rejected!\n");
+    if (top == -1 && input[i] == '\0')
+    printf("\nString Accepted\n");
+else
+    printf("\nString Rejected\n");
+
 
     return 0;
 }
